@@ -11,30 +11,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '11'
+      - name: Setup Java (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Install Cordova
-      run: npm install -g cordova
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+            cmdline-tools;latest
 
-    - name: Add Android platform
-      run: cordova platform add android
+      - name: Install Cordova
+        run: npm install -g cordova
 
-    - name: Build Android APK
-      run: cordova build android
+      # Optional: install your project deps if you have a package.json
+      - name: Install npm deps
+        if: hashFiles('package-lock.json') != ''
+        run: npm ci
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v3
-      with:
-        name: hexill-android-apk
-        path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Add Android platform
+        run: cordova platform add android
+
+      - name: Build Android APK (debug)
+        run: cordova build android --verbose
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: hexill-android-apk
+          path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
