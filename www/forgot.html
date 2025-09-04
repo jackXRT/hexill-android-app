@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forgot Password</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      font-family: Arial, sans-serif;
+      color: #00ffe7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: #111;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #00ffe7;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    h2 {
+      margin-bottom: 25px;
+      font-size: 24px;
+      color: #00ffe7;
+    }
+    input[type="email"] {
+      padding: 12px;
+      width: 100%;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #222;
+      color: #fff;
+    }
+    input[type="email"]::placeholder {
+      color: #aaa;
+    }
+    button {
+      padding: 12px;
+      width: 100%;
+      background-color: #00ffe7;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #00e6d0;
+    }
+    p#message {
+      margin-top: 20px;
+      color: #00ffcc;
+      font-size: 14px;
+    }
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #00ffe7;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Reset Password</h2>
+    <input type="email" id="email" placeholder="Enter your email" />
+    <button onclick="resetPassword()">Send Reset Link</button>
+    <p id="message"></p>
+    <a href="login.html">← Back to Login</a>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwOL-Xqobv-JZI8XqnOr9kbnavHtBoeh8",
+      authDomain: "hexill-app.firebaseapp.com",
+      projectId: "hexill-app",
+      storageBucket: "hexill-app.firebasestorage.app",
+      messagingSenderId: "838614935678",
+      appId: "1:838614935678:web:c361fd717edfb38b68902f",
+      measurementId: "G-TRC80G1Q74"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function resetPassword() {
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message");
+
+      if (!email) {
+        message.textContent = "Please enter your email.";
+        return;
+      }
+
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          message.style.color = "#00ffcc";
+          message.textContent = "Reset email sent! Check your inbox.";
+        })
+        .catch((error) => {
+          message.style.color = "red";
+          message.textContent = error.message.replace("Firebase: Error (auth/", "").replace(").", "");
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #0d1117;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .auth-box {
+      background: #161b22;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(50, 255, 225, 0.3);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #32ffe1;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: #0e1014;
+      color: #fff;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .toggle-eye {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      fill: #32ffe1;
+    }
+
+    /* Terms and Privacy Agreement Styles */
+    .agreement-section {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(50, 255, 225, 0.05);
+      border-radius: 5px;
+      border: 1px solid rgba(50, 255, 225, 0.2);
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .agreement-checkbox {
+      width: auto;
+      margin: 0;
+      cursor: pointer;
+      accent-color: #32ffe1;
+    }
+
+    .agreement-text {
+      font-size: 14px;
+      line-height: 1.4;
+      color: #ccc;
+    }
+
+    .agreement-text a {
+      color: #32ffe1;
+      text-decoration: none;
+      border-bottom: 1px dotted #32ffe1;
+    }
+
+    .agreement-text a:hover {
+      color: #28dcc4;
+      border-bottom-color: #28dcc4;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #32ffe1;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #000;
+      transition: all 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background: #28dcc4;
+    }
+
+    button:disabled {
+      background: #444;
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .link a {
+      color: #32ffe1;
+      text-decoration: none;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 480px) {
+      .auth-box {
+        padding: 20px;
+      }
+
+      .agreement-section {
+        padding: 12px;
+      }
+
+      .agreement-text {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-box">
+    <h2>Create Hexill Account</h2>
+    <input type="email" id="email" placeholder="Email" />
+
+    <div class="password-wrap">
+      <input type="password" id="password" placeholder="Password" />
+      <svg id="eyeIcon" class="toggle-eye" viewBox="0 0 24 24" onclick="togglePassword()">
+        <path d="M12 4.5C7 4.5 2.73 8.11 1 12c1.73 3.89 6 7.5 11 7.5s9.27-3.61 11-7.5c-1.73-3.89-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+        <circle cx="12" cy="12" r="2.5"/>
+      </svg>
+    </div>
+
+    <!-- Terms and Privacy Agreement Section -->
+    <div class="agreement-section">
+      <div class="checkbox-container">
+        <input type="checkbox" id="agreeTerms" class="agreement-checkbox" onchange="checkFormValid()">
+        <label for="agreeTerms" class="agreement-text">
+          I agree to the <a href="terms.html" target="_blank">Terms of Service</a> 
+          and <a href="privacy.html" target="_blank">Privacy Policy</a>
+        </label>
+      </div>
+    </div>
+
+    <button id="signupBtn" onclick="signup()" disabled>Sign Up</button>
+
+    <div class="message" id="message"></div>
+
+    <div class="link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+
+  <!-- Firebase Modular SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwOL-Xqobv-JZI8XqnOr9kbnavHtBoeh8",
+      authDomain: "hexill-app.firebaseapp.com",
+      projectId: "hexill-app",
+      storageBucket: "hexill-app.appspot.com",
+      messagingSenderId: "838614935678",
+      appId: "1:838614935678:web:c361fd717edfb38b68902f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.togglePassword = () => {
+      const pwdInput = document.getElementById("password");
+      const icon = document.getElementById("eyeIcon");
+      const isHidden = pwdInput.type === "password";
+
+      pwdInput.type = isHidden ? "text" : "password";
+
+      icon.innerHTML = isHidden
+        ? `<path d="M12 4.5C7 4.5 2.73 8.11 1 12c1.73 3.89 6 7.5 11 7.5s9.27-3.61 11-7.5c-1.73-3.89-6-7.5-11-7.5z"/>
+           <line x1="1" y1="1" x2="23" y2="23" stroke="#32ffe1" stroke-width="2"/>`
+        : `<path d="M12 4.5C7 4.5 2.73 8.11 1 12c1.73 3.89 6 7.5 11 7.5s9.27-3.61 11-7.5c-1.73-3.89-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+           <circle cx="12" cy="12" r="2.5"/>`;
+    };
+
+    // Check if form is valid and enable/disable signup button
+    window.checkFormValid = () => {
+      const agreeTerms = document.getElementById("agreeTerms").checked;
+      const signupBtn = document.getElementById("signupBtn");
+      
+      signupBtn.disabled = !agreeTerms;
+    };
+
+    const showMsg = (msg, color = "#fff") => {
+      const el = document.getElementById("message");
+      el.innerText = msg;
+      el.style.color = color;
+    };
+
+    const friendlyError = (code) => {
+      switch (code) {
+        case "auth/email-already-in-use": return "That email is already in use.";
+        case "auth/invalid-email": return "Please enter a valid email.";
+        case "auth/weak-password": return "Password must be at least 6 characters.";
+        case "auth/missing-password": return "Password is required.";
+        default: return "An unexpected error occurred. Please try again.";
+      }
+    };
+
+    window.signup = () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const agreeTerms = document.getElementById("agreeTerms").checked;
+
+      if (!email || !password) {
+        return showMsg("All fields are required", "#ffffff");
+      }
+
+      if (!agreeTerms) {
+        return showMsg("You must agree to the Terms and Privacy Policy", "#ff5252");
+      }
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          showMsg("Account created. Redirecting...", "#32ffe1");
+          setTimeout(() => location.href = "login.html", 1500);
+        })
+        .catch((err) => {
+          showMsg(friendlyError(err.code), "#ffffff");
+        });
+    };
+  </script>
+</body>
+</html>
+     

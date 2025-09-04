@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #0d1117;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .auth-box {
+      background: #161b22;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(50, 255, 225, 0.3);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #32ffe1;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: #0e1014;
+      color: #fff;
+      font-size: 16px;
+    }
+    .password-wrap {
+      position: relative;
+    }
+    .toggle-eye {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      fill: #32ffe1;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #32ffe1;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #000;
+    }
+    button:hover {
+      background: #28dcc4;
+    }
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .link a {
+      color: #32ffe1;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-box">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+
+    <div class="password-wrap">
+      <input type="password" id="password" placeholder="Password" />
+      <svg id="eyeIcon" class="toggle-eye" viewBox="0 0 24 24" onclick="togglePassword()">
+        <path d="M12 4.5C7 4.5 2.73 8.11 1 12c1.73 3.89 6 7.5 11 7.5s9.27-3.61 11-7.5c-1.73-3.89-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+        <circle cx="12" cy="12" r="2.5"/>
+      </svg>
+    </div>
+
+    <button onclick="login()">Login</button>
+    <div class="message" id="message"></div>
+
+    <div class="link">
+      Don't have an account? <a href="signup.html">Sign up here</a><br>
+      <a href="forgot.html">Forgot password?</a>
+    </div>
+  </div>
+
+  <!-- Firebase Modular SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwOL-Xqobv-JZI8XqnOr9kbnavHtBoeh8",
+      authDomain: "hexill-app.firebaseapp.com",
+      projectId: "hexill-app",
+      storageBucket: "hexill-app.appspot.com",
+      messagingSenderId: "838614935678",
+      appId: "1:838614935678:web:c361fd717edfb38b68902f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.togglePassword = () => {
+  const pwdInput = document.getElementById("password");
+  const icon = document.getElementById("eyeIcon");
+  const isHidden = pwdInput.type === "password";
+
+  // Toggle password type
+  pwdInput.type = isHidden ? "text" : "password";
+
+  // Swap eye / eye-slash
+  icon.innerHTML = isHidden
+    ? `<path d="M12 4.5C7 4.5 2.73 8.11 1 12c1.73 3.89 6 7.5 11 7.5s9.27-3.61 11-7.5c-1.73-3.89-6-7.5-11-7.5z"/>
+       <line x1="1" y1="1" x2="23" y2="23" stroke="#32ffe1" stroke-width="2"/>`
+    : `<path d="M12 4.5C7 4.5 2.73 8.11 1 12c1.73 3.89 6 7.5 11 7.5s9.27-3.61 11-7.5c-1.73-3.89-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+       <circle cx="12" cy="12" r="2.5"/>`;
+};
+    const showMsg = (msg, color = '#fff') => {
+      const el = document.getElementById('message');
+      el.innerText = msg;
+      el.style.color = color;
+    };
+
+    window.login = () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!email || !password) return showMsg("Please fill in all fields", "#ffffff");
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+         showMsg("Login successful", "#32ffe1");
+          setTimeout(() => location.href = "index.html", 1500);
+        })
+        .catch((error) => {
+          const msg = friendlyError(error.code);
+          showMsg(msg, "#ffffff");
+        });
+    };
+
+    const friendlyError = (code) => {
+      switch (code) {
+        case "auth/email-already-in-use": return "Email is already in use.";
+        case "auth/invalid-email": return "Invalid email format.";
+        case "auth/weak-password": return "Password must be at least 6 characters.";
+        case "auth/user-not-found": return "User not found.";
+        case "auth/wrong-password": return "Incorrect password.";
+        case "auth/invalid-credential": return "Invalid credentials.";
+        default: return "Something went wrong. Please try again.";
+      }
+    };
+  </script>
+</body>
+</html>
