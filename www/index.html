@@ -7,6 +7,7 @@
   <title>HEXILL | Hash Scanner & Cracker</title>
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->                                                               
  <link rel="stylesheet" href="css/styles.css">
+ <script src="js/billing.js"></script>
 </head>
 <body>
 
@@ -298,11 +299,9 @@
     function clearInput() {
       document.getElementById('hashInput').value = '';
     }
-
-    function launchPlayBilling() {
-      alert("🔒 Google Play Billing will be integrated here.");
-    }
-
+      function launchPlayBilling() {
+  purchaseProUpgrade();
+}
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
       if (event.target === document.getElementById('upgradeModal')) {
