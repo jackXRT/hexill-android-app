@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HEXILL | Hash Scanner & Cracker</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="styles.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->                                                               
+ <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
@@ -60,17 +60,7 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <div class="payment-options">
-          <button class="pro-upgrade-btn crypto-btn" onclick="upgradeToPro()">
-            <i class="fas fa-bitcoin"></i> 
-            <span>Upgrade to Pro - $39.99</span>
-            <small>Pay with Crypto</small>
-          </button>
-        </div>
-        <p style="color: #00fff7; font-size: 0.85em; margin-top: 15px; text-align: center;">
-          <i class="fas fa-shield-alt"></i> Secure crypto payments via NOWPayments<br>
-          <small style="color: #888;">Bitcoin • Ethereum • Litecoin • and more</small>
-        </p>
+       <button class="pro-upgrade-btn" onclick="launchPlayBilling()">Upgrade to Pro</button>
       </div>
     </div>
   </div>
@@ -292,7 +282,7 @@
   <script src="js/scanner.js"></script>
   
   <script>
-    // UI Functions
+     // UI Functions
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('active');
     }
@@ -309,39 +299,8 @@
       document.getElementById('hashInput').value = '';
     }
 
-    async function upgradeToPro() {
-      // Check if user is logged in
-      if (!window.currentFirebaseUser) {
-        alert('Please log in first to upgrade to Pro!');
-        window.location.href = 'login.html';
-        return;
-      }
-      
-      console.log('Creating NOWPayments payment for user:', window.currentFirebaseUser.email);
-      
-      try {
-        const response = await fetch('https://87a8dc50-7c52-460e-b2c4-814ba1febbcc-00-8h5blap17aeb.janeway.replit.dev/create-payment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: window.currentFirebaseUser.uid,
-            userEmail: window.currentFirebaseUser.email
-          })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          // Open payment page
-          window.open(result.paymentUrl, '_blank');
-          hideUpgradeModal();
-          alert(`💰 Pay ${result.cryptoAmount} ${result.cryptoCurrency} to upgrade to Pro!`);
-        } else {
-          alert('❌ Failed to create payment: ' + result.error);
-        }
-      } catch (error) {
-        alert('❌ Network error: ' + error.message);
-      }
+    function launchPlayBilling() {
+      alert("🔒 Google Play Billing will be integrated here.");
     }
 
     // Close modal when clicking outside
@@ -349,7 +308,7 @@
       if (event.target === document.getElementById('upgradeModal')) {
         hideUpgradeModal();
       }
-    });
-  </script>
+    });             
+  </script> 
 </body>
 </html>

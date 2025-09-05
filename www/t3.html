@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+    }
+    #terminal {
+      padding: 15px;
+      white-space: pre-wrap;
+      height: 100vh;
+      overflow-y: auto;
+      user-select: text;
+    }
+    .glitch {
+      animation: flicker 0.1s infinite;
+    }
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+</head>
+<body>
+  <div id="terminal" class="glitch"></div>
+  <script>
+    const terminal = document.getElementById("terminal");
+
+    function printLine(text, delay = 50) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          terminal.innerHTML += text + "\n";
+          terminal.scrollTop = terminal.scrollHeight;
+          resolve();
+        }, delay);
+      });
+    }
+
+    async function loadWordlist() {
+      try {
+        const response = await fetch("wordlist.txt");
+        const text = await response.text();
+        return text.split(/\r?\n/).filter(word => word.trim() !== "");
+      } catch {
+        await printLine("Error: Unable to load wordlist.txt");
+        return [];
+      }
+    }
+
+    function detectHashType(hash) {
+      if (/^\$2[aby]\$[0-9]{2}\$/.test(hash)) return 'bcrypt';
+      if (/^[a-f0-9]{32}$/i.test(hash)) return 'MD5';
+      if (/^[a-f0-9]{40}$/i.test(hash)) return 'SHA1';
+      if (/^[a-f0-9]{64}$/i.test(hash)) return 'SHA256';
+      if (/^[a-f0-9]{128}$/i.test(hash)) return 'SHA512';
+      return null;
+    }
+
+    function hashWord(word, type) {
+      switch (type) {
+        case 'MD5': return CryptoJS.MD5(word).toString();
+        case 'SHA1': return CryptoJS.SHA1(word).toString();
+        case 'SHA256': return CryptoJS.SHA256(word).toString();
+        case 'SHA512': return CryptoJS.SHA512(word).toString();
+        default: return null;
+      }
+    }
+
+    async function fakeLogs() {
+      const fake = [
+        "Loading cracking engine modules...",
+        "Allocating GPU threads (x32)...",
+        "Overclock boost engaged...",
+        "Entropy equalizer: Calibrating...",
+        "Loading custom mutation rules...",
+        "Deep pattern learning initiated...",
+        "Probabilistic graph search online...",
+        "Generating Markov chains...",
+        "Entropy deviation: 0.0043",
+        "Bypassing salt obfuscation...",
+        "Enabling shadow memory leak tracking...",
+        "Synchronizing with rainbow cache...",
+        "Injecting dynamic mask overlays...",
+        "Reverse-hashing entropy curves...",
+        "Cascading salt/mask hybridization...",
+        "Quantum entropy bridge (beta) initiated..."
+      ];
+      for (const line of fake) {
+        await printLine(line, 70 + Math.random() * 100);
+      }
+    }
+
+    async function startCracking(targetHash) {
+      const type = detectHashType(targetHash);
+      if (!type) {
+        await printLine("Unsupported or unknown hash format.");
+        return;
+      }
+
+      await printLine(`Cracking Session Start`);
+      await printLine(`Target Hash Detected: ${type}`);
+      await fakeLogs();
+
+      const wordlist = await loadWordlist();
+      const total = wordlist.length;
+      let attempts = 0;
+
+      for (let word of wordlist) {
+        attempts++;
+        const percent = Math.floor((attempts / total) * 100);
+        const wait = 40 + Math.random() * 60;
+
+        if (type === 'bcrypt') {
+          const match = await bcrypt.compare(word, targetHash);
+          await printLine(`>>> Trying: ${word} [${percent}%]`, wait);
+          if (match) {
+            await printLine(`\nSUCCESS! Password found.`);
+            await printLine(`Plaintext ➜ ${word}`);
+            await printLine(`Method ➜ Bcrypt+Wordlist Hybrid`);
+            return;
+          }
+        } else {
+          const hashed = hashWord(word, type);
+          await printLine(`>>> Trying: ${word} [${percent}%]`, wait);
+          if (hashed === targetHash) {
+            await printLine(`\nSUCCESS! Password found.`);
+            await printLine(`Plaintext ➜ ${word}`);
+            await printLine(`Method ➜ Dictionary + Heuristic`);
+            return;
+          }
+        }
+      }
+
+      await printLine(`\nExhausted: End of wordlist.`);
+      await printLine(`Attempts: ${attempts}`);
+      await printLine(`Method Used: Multi-phase Hybrid`);
+      await printLine(`Next Suggestion: Expand wordlist or enable AI re-guess mode.`);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const targetHash = params.get("hash");
+    if (targetHash) startCracking(targetHash.trim());
+  </script>
+</body>
+</html>

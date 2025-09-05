@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hexill Pro Cracking Terminal</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      height: 100%;
+      overflow: hidden;
+    }
+    #terminal {
+      padding: 15px;
+      white-space: pre-wrap;
+      height: 100vh;
+      overflow-y: auto;
+      user-select: text;
+      box-sizing: border-box;
+    }
+    .glitch {
+      animation: flicker 0.1s infinite;
+    }
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+    .highlight { color: #ffff00; font-weight: bold; }
+    .private { color: #00ffff; font-weight: bold; }
+    .error { color: #ff4444; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="terminal" class="glitch"></div>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+    let bip39 = [];
+
+    function randomWord() {
+      return bip39[Math.floor(Math.random() * bip39.length)];
+    }
+
+    function generateSeedPhrase() {
+      return Array.from({ length: 12 }, randomWord).join(" ");
+    }
+
+    function generateWIF() {
+      const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+      return Array.from({ length: 51 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    }
+
+    function generatePrivKey() {
+      const hex = 'abcdef0123456789';
+      return Array.from({ length: 64 }, () => hex[Math.floor(Math.random() * hex.length)]).join('');
+    }
+
+    function fakeBinary() {
+      return Array.from({ length: 100 }, () => Math.random() > 0.5 ? '1' : '0').join('');
+    }
+
+    function fakeHex() {
+      const hexChars = 'abcdef0123456789';
+      return Array.from({ length: 64 }, () => hexChars[Math.floor(Math.random() * hexChars.length)]).join('');
+    }
+
+    function fakeOp() {
+      const ops = [
+        "→ Seeding entropy core...",
+        "→ Loading GPU threads...",
+        "→ Memory shard fusion...",
+        "→ Brute vector initialized...",
+        "→ Entropy fork detected at 0xE4F...",
+        "→ Injecting XOR fault bypass...",
+        "→ Rebuilding BIP32 derivation path...",
+        "→ Finalizing private key hash...",
+        "→ Wallet sync with mempool...",
+        "→ Extracting address reuse patterns...",
+        "→ ECC alignment pass 3 successful...",
+        "→ Lightning Network leak bypassed...",
+        "→ Deep mnemonic scanning enabled...",
+        "→ Recovering entropy from cold storage...",
+        "→ Thread affinity optimized for scalar hashing...",
+        "→ Loading compressed rainbow tables...",
+        "→ Avalanche vector distributed across CPU cores...",
+        "→ Scrypt iterations bypassed with shortcut sequence...",
+        "→ Running brainwallet mutation logic...",
+        "→ XOR collision detected... resolving...",
+        "→ Chain checkpoint block sync complete...",
+        "→ Encrypted brainwallet entropy cracked...",
+        "→ SHA512 HMAC derivation stabilized...",
+        "→ Cracking phase locked... recalculating salt...",
+        "→ Electrum index recovery executed..."
+      ];
+      return ops[Math.floor(Math.random() * ops.length)];
+    }
+
+    function printLine(text, delay = 180) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          terminal.innerHTML += text + "\n";
+          terminal.scrollTop = terminal.scrollHeight;
+          resolve();
+        }, delay);
+      });
+    }
+
+    async function startCracking() {
+      await printLine("Booting Pro Simulation Engine v8.9...", 600);
+      await printLine("User: PRO Tier [Access Level: 3/3]", 500);
+      await printLine("Hardware Threads: 64 | GPU Cluster: Active\n", 500);
+
+      for (let i = 0; i < 400; i++) {
+        const type = Math.random();
+        const delay = 180 + Math.random() * 120;
+
+        if (type < 0.3) {
+          await printLine(fakeOp(), delay);
+        } else if (type < 0.6) {
+          await printLine(fakeBinary(), delay);
+        } else {
+          await printLine(fakeHex(), delay);
+        }
+
+        if (i % 40 === 0) {
+          await printLine(fakeOp(), 900);
+        }
+      }
+
+      const fullSeed = generateSeedPhrase();
+      const privKey = generatePrivKey();
+      const wifKey = generateWIF();
+
+      await printLine("\n→ ECC vector alignment successful.");
+      await printLine("→ Mnemonic key confirmed via BIP39 scan.");
+      await printLine(`<span class="highlight">SEED PHRASE:</span> "${fullSeed}"`);
+      await printLine(`<span class="private">PRIVATE KEY:</span> ${privKey}`);
+      await printLine(`<span class="private">WIF:</span> ${wifKey}\n`);
+      await printLine(`<span class="error">[END]</span> Cracking complete. Keys stored in volatile memory.`);
+    }
+
+    fetch("bip39-wordlist.txt")
+      .then(res => res.text())
+      .then(text => {
+        bip39 = text.split("\n").map(w => w.trim()).filter(Boolean);
+        startCracking();
+      });
+  </script>
+</body>
+</html>

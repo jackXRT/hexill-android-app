@@ -682,7 +682,7 @@ const form = document.createElement('form');
 form.method = 'GET';
 
 // Use direct file names (they're already renamed to be neutral)
-form.action = redirectFile;
+form.action = './' + redirectFile;
   const inputField = document.createElement('input');
   inputField.type = 'hidden';
   inputField.name = 'input';
