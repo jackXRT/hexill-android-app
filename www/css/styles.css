@@ -353,14 +353,14 @@ pre {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: none;
+  background: red; /* Add this line temporarily */
   border: none;
   color: #fff;
   font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.2s;
+  padding: 10px; /* Add this line too */
 }
-
 .close-sidebar:hover {
   color: #32ffe1;
   transform: rotate(90deg);
