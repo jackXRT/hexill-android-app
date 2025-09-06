@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android App Bundle
 
 on:
   push:
@@ -26,9 +26,6 @@ jobs:
         
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
-      with:
-        api-level: 33
-        build-tools: 33.0.0
         
     - name: Install Cordova
       run: npm install -g cordova
@@ -36,14 +33,11 @@ jobs:
     - name: Add Android platform
       run: cordova platform add android
       
-    - name: Accept Android SDK licenses
-      run: yes | sdkmanager --licenses || true
+    - name: Build Android App Bundle
+      run: cordova build android --release -- --packageType=bundle
       
-    - name: Build Android APK
-      run: cordova build android --debug
-      
-    - name: Upload APK
+    - name: Upload App Bundle
       uses: actions/upload-artifact@v4
       with:
-        name: hexill-android-apk
-        path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
+        name: hexill-android-bundle
+        path: platforms/android/app/build/outputs/bundle/release/app-release.aab
